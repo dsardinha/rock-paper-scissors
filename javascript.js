@@ -28,5 +28,29 @@ const getHumanChoice = () => {
     }
     else {
         alert(`Invalid option. Please select "${ROCK}", "${PAPER}" or "${SCISSORS}"`);
+        return getHumanChoice();
     }
 }
+
+const playRound = (humanChoice, computerChoice) => {
+    if (
+        (humanChoice === ROCK && computerChoice === SCISSORS) ||
+        (humanChoice === SCISSORS && computerChoice === PAPER) ||
+        (humanChoice === PAPER && computerChoice === ROCK)        
+    ){
+        humanScore++;
+        console.log(`You win! ${humanChoice} beats ${computerChoice}`);
+    } else if (
+        (computerChoice === ROCK && humanChoice === SCISSORS) ||
+        (computerChoice === SCISSORS && humanChoice === PAPER) ||
+        (computerChoice === PAPER && humanChoice === ROCK) 
+    ) {
+        computerScore++;
+        console.log(`You lose! ${computerChoice} beats ${humanChoice}`);
+    } else {
+        console.log(`It's a draw! You both selected ${humanChoice}`);
+    }
+}
+
+playRound(getHumanChoice(), getComputerChoice());
+console.log(humanScore, computerScore);
