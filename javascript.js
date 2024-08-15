@@ -1,78 +1,71 @@
-const ROCK = 'rock';
-const PAPER = 'paper';
-const SCISSORS = 'scissors';
+const ROCK = 'Rock';
+const PAPER = 'Paper';
+const SCISSORS = 'Scissors';
 
-const getComputerChoice = () => {
-    let computerChoice = Math.floor(Math.random() * 3);
-    if (computerChoice === 0) {
+let playerScore = 0;
+let computerScore = 0;
+let playerSelection = '';
+let roundCounter = 0;
+
+const buttons = document.querySelectorAll('button');
+const roundResult = document.querySelector('.round-result');
+const overallResult = document.querySelector('.overall-result');
+const finalResult = document.querySelector('.final-result');
+
+const getComputerSelection = () => {
+    let computerSelection = Math.floor(Math.random() * 3);
+    if (computerSelection === 0) {
         return ROCK;
-    } else if (computerChoice === 1) {
+    } else if (computerSelection === 1) {
         return PAPER;
     } else {
         return SCISSORS;
     }
 }
 
-const getHumanChoice = () => {
-    let humanChoice = prompt(`Choose an option: "${ROCK}", "${PAPER}" or "${SCISSORS}"`)
-    .trim()
-    .toLowerCase();
-    if (humanChoice === ROCK 
-        || humanChoice === PAPER 
-        || humanChoice === SCISSORS
-        ) {
-        return humanChoice;
-    }
-    else {
-        alert(`Invalid option. Please select "${ROCK}", "${PAPER}" or "${SCISSORS}"`);
-        return getHumanChoice();
-    }
-}
-
-const checkWinner = (humanScore, computerScore) => {
-    if (humanScore > computerScore) {
-        console.log(`You won the game! You won ${humanScore} rounds against ${computerScore} won by the computer.`);
-    } else if (humanScore < computerScore) {
-        console.log(`You lost the game :( The computer won ${computerScore} rounds against ${humanScore} won by you.`);
+const playRound = (playerSelection, computerSelection) => {
+    if (
+        (playerSelection === ROCK && computerSelection === SCISSORS) ||
+        (playerSelection === SCISSORS && computerSelection === PAPER) ||
+        (playerSelection === PAPER && computerSelection === ROCK)        
+    ){
+        playerScore++;
+        roundResult.textContent = `You win! ${playerSelection} beats ${computerSelection}`;
+    } else if (
+        (computerSelection === ROCK && playerSelection === SCISSORS) ||
+        (computerSelection === SCISSORS && playerSelection === PAPER) ||
+        (computerSelection === PAPER && playerSelection === ROCK) 
+    ) {
+        computerScore++;
+        roundResult.textContent = `You lose! ${computerSelection} beats ${playerSelection}`;
     } else {
-        console.log(`It's a draw! You and computer both won ${humanScore} rounds`);
+        roundResult.textContent = `It's a draw! You both selected ${playerSelection}`;
+    }
+    overallResult.textContent = `Player: ${playerScore}\nComputer: ${computerScore}`;
+    console.log(playerScore, computerScore);
+    if (playerScore === 5 || computerScore === 5) {
+        checkWinner(playerScore, computerScore);
+        buttons.forEach((button) => {
+            button.disabled = true;
+        })
     }
 }
 
-const playGame = () => {
-    let humanScore = 0;
-    let computerScore = 0;
-
-    const playRound = (humanChoice, computerChoice) => {
-        if (
-            (humanChoice === ROCK && computerChoice === SCISSORS) ||
-            (humanChoice === SCISSORS && computerChoice === PAPER) ||
-            (humanChoice === PAPER && computerChoice === ROCK)        
-        ){
-            humanScore++;
-            console.log(`You win! ${humanChoice} beats ${computerChoice}`);
-            console.log(humanScore, computerScore);
-        } else if (
-            (computerChoice === ROCK && humanChoice === SCISSORS) ||
-            (computerChoice === SCISSORS && humanChoice === PAPER) ||
-            (computerChoice === PAPER && humanChoice === ROCK) 
-        ) {
-            computerScore++;
-            console.log(`You lose! ${computerChoice} beats ${humanChoice}`);
-            console.log(humanScore, computerScore);
-        } else {
-            console.log(`It's a draw! You both selected ${humanChoice}`);
-            console.log(humanScore, computerScore);
-        }
-    }
-
-    let counter = 0;
-    while (counter < 5) {
-        playRound(getHumanChoice(), getComputerChoice());
-        counter++;
-    }
-
-    checkWinner(humanScore, computerScore);
+const startNewGame = () => {
+    finalResult
 }
 
-playGame();
+const checkWinner = (playerScore, computerScore) => {
+    if (playerScore > computerScore) {
+        finalResult.textContent = "You won the game! 🏆";
+    } else {
+        finalResult.textContent = "You lost the game 💀";
+    }
+}
+
+buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+        playerSelection = button.textContent;
+        playRound(playerSelection, getComputerSelection());
+    })
+})
